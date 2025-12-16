@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 
 const items = [
-  { id: "menu", label: "Menu", passive: true }, // 通過点
   { id: "gallery", label: "Gallery" },
+  { id: "menu", label: "Menu", passive: true }, // 通過点
   { id: "access", label: "Access" },
 ];
+
 
 export default function VerticalNav() {
   const [isHero, setIsHero] = useState(true);

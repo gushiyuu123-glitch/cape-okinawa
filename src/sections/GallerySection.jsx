@@ -1,15 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 gsap.registerPlugin(ScrollTrigger);
 
 export default function GallerySection() {
   const sectionRef = useRef(null);
   const titleRef = useRef(null);
   const leadRef = useRef(null);
-  const gridRef = useRef(null);
-
+  const pcGridRef = useRef(null);
+  const spGridRef = useRef(null);
   const [active, setActive] = useState(null);
 
   const images = useMemo(
@@ -24,14 +23,41 @@ export default function GallerySection() {
     []
   );
 
-  /* =========================
-     Animation
-  ========================= */
+  // 画像ロード後 refresh（保険）
   useEffect(() => {
+    const root = sectionRef.current;
+    if (!root) return;
+    const imgs = Array.from(root.querySelectorAll("img"));
+    if (!imgs.length) return;
+
+    let done = 0;
+    const onDone = () => {
+      done++;
+      if (done >= imgs.length) {
+        requestAnimationFrame(() => ScrollTrigger.refresh());
+        setTimeout(() => ScrollTrigger.refresh(), 120);
+      }
+    };
+
+    imgs.forEach((img) => {
+      if (img.complete) onDone();
+      else img.addEventListener("load", onDone, { once: true });
+    });
+
+    return () => imgs.forEach((img) => img.removeEventListener("load", onDone));
+  }, []);
+
+  useLayoutEffect(() => {
+    const root = sectionRef.current;
+    if (!root) return;
+
+    const mm = gsap.matchMedia();
+
     const ctx = gsap.context(() => {
+      // 見出しは共通（PC/SPどっちでも）
       gsap.fromTo(
         [titleRef.current, leadRef.current],
-        { opacity: 0, y: 10 },
+        { opacity: 0, y: 12 },
         {
           opacity: 1,
           y: 0,
@@ -39,283 +65,131 @@ export default function GallerySection() {
           ease: "power2.out",
           stagger: 0.12,
           scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 70%",
+            trigger: root,
+            start: "top 75%",
+            once: true,
           },
         }
       );
 
-const items = gridRef.current?.querySelectorAll("[data-photo]");
-if (!items?.length) return;
+      // ✅ PCだけ
+      mm.add("(min-width: 768px)", () => {
+        const items = pcGridRef.current?.querySelectorAll("[data-photo]");
+        if (!items?.length) return;
 
-items.forEach((item, i) => {
-  const isEven = i % 2 === 0;
+        items.forEach((item, i) => {
+          const isEven = i % 2 === 0;
+          gsap.fromTo(
+            item,
+            { opacity: 0, y: 24, x: isEven ? -10 : 10 },
+            {
+              opacity: 1,
+              y: 0,
+              x: 0,
+              duration: 0.95,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: item,
+                start: "top 85%",
+                once: true,
+              },
+            }
+          );
+        });
+      });
 
-  gsap.fromTo(
-    item,
-    {
-      opacity: 0,
-      y: 20,
-      x: isEven ? -6 : 6,
-    },
-    {
-      opacity: 1,
-      y: 0,
-      x: 0,
-      duration: 0.9,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: item,
-        start: "top 85%",
-      },
-    }
-  );
-});
+      // ✅ SPだけ
+      mm.add("(max-width: 767px)", () => {
+        const items = spGridRef.current?.querySelectorAll("[data-photo]");
+        if (!items?.length) return;
 
+        items.forEach((item, i) => {
+          gsap.fromTo(
+            item,
+            { opacity: 0, y: 18, x: i % 2 === 0 ? -6 : 6 },
+            {
+              opacity: 1,
+              y: 0,
+              x: 0,
+              duration: 0.85,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: item,
+                start: "top 90%",
+                once: true,
+              },
+            }
+          );
+        });
+      });
 
-    }, sectionRef);
+      // ここで一回だけrefresh
+      ScrollTrigger.refresh();
+    }, root);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      mm.revert();
+    };
   }, []);
-
-  /* ESC close */
-  useEffect(() => {
-    const onKeyDown = (e) => e.key === "Escape" && setActive(null);
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
-
   return (
     <section ref={sectionRef} className="relative bg-[#f6f3ee] py-[22vh]">
-      {/* =========================
-          Heading
-      ========================= */}
       <h2
         ref={titleRef}
-        className="
-          text-center
-          text-[11px]
-          tracking-[0.42em]
-          text-[#3a3a3a]/55
-          mb-[6vh]
-        "
+        className="text-center text-[11px] tracking-[0.42em] text-[#3a3a3a]/55 mb-[6vh]"
       >
         GALLERY
       </h2>
 
       <p
         ref={leadRef}
-        className="
-          max-w-[720px]
-          mx-auto
-          text-center
-          text-[13px]
-          leading-[2.4]
-          tracking-[0.14em]
-          text-[#3a3a3a]/60
-          mb-[12vh]
-          px-6
-        "
+        className="max-w-[720px] mx-auto text-center text-[13px] leading-[2.4] tracking-[0.14em] text-[#3a3a3a]/60 mb-[12vh] px-6"
       >
         写真は、少しだけ笑っている。
         <br />
         ここで過ごした時間みたいに。
       </p>
 
-      {/* =========================
-          PC : pop grid
-      ========================= */}
-<div
-  ref={gridRef}
-  className="
-    hidden md:flex
-    flex-col
-    gap-[14vh]
-    max-w-[1100px]
-    mx-auto
-    px-6
-  "
->
-  {[
-    {
-      img: images[0],
-      text: "風の音だけが、\n先に届いていた。",
-    },
-    {
-      img: images[2],
-      text: "いつの間にか、\n時間を忘れていた。",
-    },
-    {
-      img: images[3],
-      text: "コーヒーの温度と、\n午後の光。",
-    },
-    {
-      img: images[5],
-      text: "帰り道だけが、\n少し静かだった。",
-    },
-  ].map((item, i) => (
-    <div
-      key={item.img.src}
-      className={`
-        flex
-        ${i % 2 === 0 ? "flex-row" : "flex-row-reverse"}
-        items-start
-        gap-10
-      `}
-    >
-      {/* 写真 */}
-      <Photo
-        img={item.img}
-        onClick={setActive}
-        className="
-          w-[68%]
-          rounded-[26px]
-        "
-      />
-
-      {/* テキスト */}
-      <p
-        className="
-          max-w-[18ch]
-          text-[13px]
-          leading-[2.4]
-          tracking-[0.14em]
-          text-[#3a3a3a]/55
-          whitespace-pre-line
-          translate-y-[18px]
-        "
+      {/* PC */}
+      <div
+        ref={pcGridRef}
+        className="hidden md:flex flex-col gap-[14vh] max-w-[1100px] mx-auto px-6"
       >
-        {item.text}
-      </p>
-    </div>
-  ))}
-</div>
-
-{/* =========================
-    SP : vertical flow gallery
-========================= */}
-<div
-  ref={gridRef}
-  className="
-    md:hidden
-    flex flex-col
-    gap-12
-    px-6
-  "
->
-  {images.map((img, i) => (
-    <Photo
-      key={img.src}
-      img={img}
-      onClick={setActive}
-      className={[
-        "w-full",
-        i % 2 === 0
-          ? "rounded-[26px] translate-x-[-4px]"
-          : "rounded-[18px] translate-x-[4px]",
-      ].join(" ")}
-    />
-  ))}
-</div>
-
-      {/* =========================
-          Lightbox
-      ========================= */}
-      {active && (
-        <div
-          className="
-            fixed inset-0 z-[60]
-            bg-black/55
-            backdrop-blur-[6px]
-            flex items-center justify-center
-            px-6
-          "
-          onClick={() => setActive(null)}
-        >
+        {[0, 2, 3, 5].map((idx, i) => (
           <div
-            className="
-              relative
-              max-w-[1100px] w-full
-              bg-white
-              rounded-[26px]
-              shadow-[0_40px_120px_rgba(0,0,0,0.45)]
-              overflow-hidden
-            "
-            onClick={(e) => e.stopPropagation()}
+            key={images[idx].src}
+            className={`flex ${
+              i % 2 === 0 ? "flex-row" : "flex-row-reverse"
+            } items-start gap-10`}
           >
-            <div className="relative w-full aspect-[16/10]">
-              <img
-                src={active.src}
-                alt={active.alt}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-white/15 mix-blend-soft-light" />
-            </div>
-
-            <div className="px-6 py-5 flex items-center justify-between">
-              <p className="text-[12px] tracking-[0.16em] text-[#3a3a3a]/70">
-                {active.alt}
-              </p>
-              <button
-                onClick={() => setActive(null)}
-                className="
-                  text-[11px]
-                  tracking-[0.22em]
-                  text-[#3a3a3a]/55
-                  hover:text-[#3a3a3a]
-                  transition-colors
-                "
-              >
-                CLOSE
-              </button>
-            </div>
+            <Photo img={images[idx]} onClick={setActive} className="w-[68%] rounded-[26px]" />
           </div>
-        </div>
-      )}
+        ))}
+      </div>
+
+      {/* SP */}
+      <div ref={spGridRef} className="md:hidden flex flex-col gap-12 px-6">
+        {images.map((img) => (
+          <Photo key={img.src} img={img} onClick={setActive} className="w-full rounded-[22px]" />
+        ))}
+      </div>
     </section>
   );
 }
 
-/* =========================
-   Photo : pop style
-========================= */
 function Photo({ img, onClick, className = "" }) {
   return (
     <button
       type="button"
       data-photo
       onClick={() => onClick(img)}
-      className={[
-        "relative overflow-hidden bg-[#e6e3df]",
-        "shadow-[0_14px_40px_rgba(0,0,0,0.12)]",
-        "transition-all duration-[500ms] ease-out",
-        "hover:-translate-y-1 hover:shadow-[0_28px_70px_rgba(0,0,0,0.18)]",
-        className,
-      ].join(" ")}
-      aria-label={img.alt}
+      className={`relative overflow-hidden bg-[#e6e3df] shadow-[0_14px_40px_rgba(0,0,0,0.12)] ${className}`}
     >
       <img
         src={img.src}
         alt={img.alt}
-        className="
-          w-full h-full object-cover
-          transition-transform duration-[900ms]
-          hover:scale-[1.06]
-        "
-      />
-
-      {/* pop光 */}
-      <div
-        className="
-          absolute inset-0
-          opacity-0 hover:opacity-100
-          transition-opacity duration-[600ms]
-          bg-gradient-to-tr
-          from-white/0
-          via-white/20
-          to-white/30
-          pointer-events-none
-        "
+        className="w-full h-full object-cover"
+        loading="lazy"
       />
     </button>
   );
