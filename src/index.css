@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Space */
+  --bg-base: #f3f1ec;
+  --bg-soft: #ebe7df;
+
+  /* Text */
+  --text-main: #1a1a1a;
+  --text-sub:  #3f3f3f;
+  --text-mute: #7a7a7a;
+
+  /* Lines */
+  --line-soft: #d8d4cc;
+  --line-hard: #bfbab0;
+
+  /* Accent (use carefully) */
+  --sea-muted: #5f8f9e;
+  --sand-muted: #c9bfae;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-main);
+}
+@keyframes fade {
+  0%,100% { opacity: .55 }
+  50% { opacity: .85 }
+}
