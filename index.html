@@ -1,36 +1,103 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-<!-- Shippori Mincho B1 (JP Serif) -->
-<link
-  href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500;600;700&display=swap"
-  rel="stylesheet"
-/>
-
-<!-- Cormorant Garamond (EN Serif) -->
-<link
-  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap"
-  rel="stylesheet"
-/>
-
-<!-- Inter (UI / Body) -->
-<link
-  href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-  rel="stylesheet"
-/>
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <!-- Google翻訳を完全無効化 -->
+
+    <!-- Google翻訳を無効化 -->
     <meta name="google" content="notranslate" />
-    <title>cape-okinawa</title>
+
+    <!-- ===============================
+         Primary SEO
+    =============================== -->
+    <title>CAPE OKINAWA — 海を眺めて、コーヒーを。</title>
+    <meta
+      name="description"
+      content="沖縄の海を眺めながら、静かにコーヒーを。光と余白を大切にした、ミニマルなカフェのコンセプトページ。"
+    />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Canonical（デプロイ後にURLを差し替え推奨） -->
+    <link rel="canonical" href="https://cape-okinawa.vercel.app/" />
+
+    <!-- ===============================
+         Fonts (Google Fonts)
+         ※読み込み安定のため preconnect
+    =============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Shippori Mincho B1 (JP Serif) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Cormorant Garamond (EN Serif) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Inter (UI / Body) -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- ===============================
+         Favicon & App Icons
+         /public 配下に配置
+    =============================== -->
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180x180.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#f4f0ea" />
+
+    <!-- ===============================
+         OGP
+    =============================== -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CAPE OKINAWA" />
+    <meta property="og:title" content="CAPE OKINAWA — 海を眺めて、コーヒーを。" />
+    <meta
+      property="og:description"
+      content="沖縄の海を眺めながら、静かにコーヒーを。光と余白を大切にしたミニマルなカフェページ。"
+    />
+    <meta property="og:image" content="/ogp.png" />
+    <meta property="og:url" content="https://cape-okinawa.vercel.app/" />
+
+    <!-- ===============================
+         Twitter Card
+    =============================== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CAPE OKINAWA — 海を眺めて、コーヒーを。" />
+    <meta
+      name="twitter:description"
+      content="沖縄の海を眺めながら、静かにコーヒーを。光と余白のミニマルページ。"
+    />
+    <meta name="twitter:image" content="/ogp.png" />
+
+    <!-- ===============================
+         JSON-LD（任意：コンセプト/カフェ用）
+         ※住所/電話など入れるなら後で差し替え
+    =============================== -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "CafeOrCoffeeShop",
+        "name": "CAPE OKINAWA",
+        "description": "沖縄の海を眺めながら、静かにコーヒーを。",
+        "url": "https://cape-okinawa.vercel.app/",
+        "image": "https://cape-okinawa.vercel.app/ogp.png"
+      }
+    </script>
   </head>
+
   <body>
     <div id="root"></div>
+
+    <!-- Vite / React -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

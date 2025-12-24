@@ -32,39 +32,56 @@ export default function FooterSection() {
   }, []);
 
   return (
-<footer
-  ref={footerRef}
-  className="
-    bg-[#f6f3ee]
-    pt-[18vh]
-    pb-[12vh]
-    text-center
-  "
->
-  {/* 余韻コピー */}
-  <p
-    className="
-      text-[12px]
-      leading-[2.4]
-      tracking-[0.18em]
-      text-[#3a3a3a]/55
-      mb-14
-    "
-  >
-    また、風の静かな日に。
-  </p>
+    <footer
+      ref={footerRef}
+      className="
+        bg-[#f6f3ee]
+        pt-[18vh]
+        pb-[12vh]
+        text-center
+      "
+    >
+      {/* 余韻コピー */}
+      <p
+        className="
+          text-[12px]
+          leading-[2.4]
+          tracking-[0.18em]
+          text-[#3a3a3a]/55
+          mb-14
+        "
+      >
+        また、風の静かな日に。
+      </p>
 
-  {/* ブランド署名（作品のサイン） */}
-  <p
-    className="
-      text-[11px]
-      tracking-[0.32em]
-      text-[#3a3a3a]/45
-    "
-  >
-    CAPE. OKINAWA
-  </p>
-</footer>
+      {/* ブランド署名 */}
+      <p
+        className="
+          text-[11px]
+          tracking-[0.32em]
+          text-[#3a3a3a]/45
+          mb-4
+        "
+      >
+        CAPE. OKINAWA
+      </p>
 
+      {/* Gushiken Design リンク（控えめ + 上質） */}
+      <a
+        href="https://gushikendesign.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="
+          text-[10px]
+          tracking-[0.28em]
+          text-[#3a3a3a]/40
+          hover:text-[#3a3a3a]/70
+          transition-colors
+          duration-500
+        "
+      >
+        © 2025 GUSHIKEN DESIGN — Portfolio
+      </a>
+    </footer>
   );
 }
